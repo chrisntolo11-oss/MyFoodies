@@ -143,3 +143,10 @@ if (submitBtn) {
     alert('Your likes have been submitted!');
   });
 }
+
+const happyIcon = document.querySelector('.happy');
+const mobileMenu = document.querySelector('.mobile-version');
+
+happyIcon.addEventListener('click', () => {
+  mobileMenu.classList.toggle('active');
+});
