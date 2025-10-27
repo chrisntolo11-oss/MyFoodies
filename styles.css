@@ -356,3 +356,18 @@ h4 { font-size: 1.8rem; color: var(--lead); }
 
   h1 { font-size: 1.8rem; }
 }
+
+.mobile-toggle {
+  display: none;
+  font-size: 2rem;
+  color: var(--gold-finger);
+  cursor: pointer;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 1000;
+}
+
+@media (max-width: 780px) {
+  .mobile-toggle { display: block; }
+}

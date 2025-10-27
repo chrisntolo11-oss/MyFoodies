@@ -2,11 +2,16 @@
 // Elements
 // ------------------------------
 const happyTab = document.querySelector('.happy-tab');
-const btnIcon = document.querySelector('.btn-icon');
+const happyBtn = document.querySelector('.btn-icon'); // smile face button
 const closeBtn = document.querySelector('.close-btn');
 const overlay = document.querySelector('.overlay');
 const smileList = document.querySelector('.smile-list');
 const happyListContainer = document.querySelector('.happy-list');
+const submitBtn = document.querySelector('.submit-btn');
+
+// Mobile nav
+const mobileMenu = document.querySelector('.mobile-version');
+const mobileToggle = document.querySelector('.mobile-toggle'); // hamburger
 
 // ------------------------------
 // Initialize likes from localStorage
@@ -14,12 +19,12 @@ const happyListContainer = document.querySelector('.happy-list');
 let likedItems = JSON.parse(localStorage.getItem('likedItems')) || [];
 
 // ------------------------------
-// Render the side panel
+// Render liked items in side panel
 // ------------------------------
 function renderLikedItems() {
   if (!smileList) return;
   smileList.innerHTML = '';
-  likedItems.forEach((item) => {
+  likedItems.forEach(item => {
     const newItem = document.createElement('div');
     newItem.classList.add('item');
     newItem.innerHTML = `
@@ -33,35 +38,25 @@ function renderLikedItems() {
     smileList.appendChild(newItem);
   });
 }
-
-// Initial render
 renderLikedItems();
 
 // ------------------------------
-// Toggle side panel
+// Side panel toggle
 // ------------------------------
-if (btnIcon && happyTab && overlay) {
-  btnIcon.addEventListener('click', () => {
-    happyTab.classList.toggle('happy-tab-active');
-    overlay.classList.toggle('active');
-  });
-
-  closeBtn.addEventListener('click', () => {
-    happyTab.classList.remove('happy-tab-active');
-    overlay.classList.remove('active');
-  });
-
-  overlay.addEventListener('click', () => {
-    happyTab.classList.remove('happy-tab-active');
-    overlay.classList.remove('active');
-  });
+function toggleHappyTab() {
+  happyTab.classList.toggle('happy-tab-active');
+  overlay.classList.toggle('active');
 }
 
+if (happyBtn) happyBtn.addEventListener('click', toggleHappyTab);
+if (closeBtn) closeBtn.addEventListener('click', toggleHappyTab);
+if (overlay) overlay.addEventListener('click', toggleHappyTab);
+
 // ------------------------------
-// Generate restaurant cards dynamically
+// Generate restaurant cards
 // ------------------------------
-if (happyListContainer) {
-  restaurants.forEach((restaurant) => {
+if (happyListContainer && typeof restaurants !== 'undefined') {
+  restaurants.forEach(restaurant => {
     const card = document.createElement('div');
     card.classList.add('happy-item');
     card.innerHTML = `
@@ -76,16 +71,16 @@ if (happyListContainer) {
 }
 
 // ------------------------------
-// Handle likes (works for dynamic and existing items)
+// Handle likes (works for both existing and dynamic items)
 // ------------------------------
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.btn-like')) return;
+document.addEventListener('click', e => {
+  const heart = e.target.closest('.btn-like');
+  if (!heart) return;
 
   e.preventDefault();
-  const heart = e.target.closest('.btn-like');
-  const itemCard = heart.closest('.happy-item');
-  const name = itemCard.querySelector('h4').textContent;
-  const image = itemCard.querySelector('img').src;
+  const card = heart.closest('.happy-item');
+  const name = card.querySelector('h4').textContent;
+  const image = card.querySelector('img').src;
 
   heart.classList.toggle('liked');
 
@@ -115,38 +110,36 @@ function updateHeartColors() {
     }
   });
 }
-
-// Run after generating cards
 updateHeartColors();
 
 // ------------------------------
 // Handle Submit button
 // ------------------------------
-const submitBtn = document.querySelector('.submit-btn');
-
 if (submitBtn) {
   submitBtn.addEventListener('click', () => {
     if (likedItems.length === 0) {
       alert('You have no items to submit!');
       return;
     }
-
-    // For now, we just log the liked items (replace this with your API call)
     console.log('Submitting liked items:', likedItems);
-
-    // Optional: clear likes after submitting
     likedItems = [];
     localStorage.setItem('likedItems', JSON.stringify(likedItems));
     renderLikedItems();
     updateHeartColors();
-
     alert('Your likes have been submitted!');
   });
 }
 
-const happyIcon = document.querySelector('.happy');
-const mobileMenu = document.querySelector('.mobile-version');
+// ------------------------------
+// Mobile menu toggle
+// ------------------------------
+if (mobileToggle && mobileMenu) {
+  mobileToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+  });
+}
 
-happyIcon.addEventListener('click', () => {
-  mobileMenu.classList.toggle('active');
+// Optional: close mobile menu when a link is clicked
+mobileMenu?.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => mobileMenu.classList.remove('active'));
 });
